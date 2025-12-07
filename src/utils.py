@@ -458,6 +458,7 @@ def is_allowed(cmd: str) -> bool:
     """
     Check if the command is allowed based on the whitelist patterns.
     """
+    print(f"Validating command: {cmd}")
     cmd = cmd.strip()
     for pattern in ALLOWED_COMMANDS:
         if re.fullmatch(pattern, cmd):

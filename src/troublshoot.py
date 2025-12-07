@@ -31,6 +31,7 @@ LOG_COMMANDS = {
 @tool
 def log_collector(cmd: str) -> str:
     """Runs a command on the target system to retrieve relevant logs and returns the output."""
+    print(f"Collecting logs for command: {cmd}")
     return ssh_run(cmd)
 
 
