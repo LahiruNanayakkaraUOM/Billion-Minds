@@ -451,9 +451,9 @@ ALLOWED_COMMANDS = load_commands_whitelist()
 print(ALLOWED_COMMANDS)
 
 import re
-from langchain.tools import tools
+from langchain.tools import tool
 
-@tools
+@tool
 def is_allowed(cmd: str) -> bool:
     """
     Check if the command is allowed based on the whitelist patterns.

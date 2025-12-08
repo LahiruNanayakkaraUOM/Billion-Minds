@@ -85,7 +85,7 @@ def diagnostics_node(logs, context):
 def scanning_node(logs, context):
 
     prompt = ISSUE_DETECTION_AND_SAFE_COMMAND_GENERATION_PROMPT.format(
-        logs=json.dumps(logs, indent=2),
+        logs=json.dumps(logs),
         context=context
     )
 

@@ -260,8 +260,8 @@ elif st.session_state.awaiting_resolution_confirmation:
                                     st.json(troubleshoot_result["summary"])
                                     build_conversation_payload(ticketId, ai_msg_auto, False)
                                     st.session_state.chat_history.append(AIMessage(ai_msg_auto))
-                                    st.session_state.chat_history.append(AIMessage(troubleshoot_result["summary"]))
-                                    build_conversation_payload(ticketId, troubleshoot_result["summary"], False)
+                                    # st.session_state.chat_history.append(AIMessage(troubleshoot_result["summary"]))
+                                    # build_conversation_payload(ticketId, troubleshoot_result["summary"], False)
                                     st.session_state.awaiting_resolution_confirmation = False
                                     st.session_state.show_buttons = True
                                 else:

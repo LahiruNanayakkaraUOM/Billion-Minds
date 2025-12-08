@@ -81,7 +81,7 @@ LOGIC RULES:
     • High severity issues first  
     • Issues requiring human intervention first  
 - Commands must always be the safest possible option.
-- If logs do not indicate any issue → return `{}`.
+- If logs do not indicate any issue → return `{{}}`.
 
 ADDITIONAL RULES:
 - ALWAYS validate every command with the `is_allowed` tool before use.
