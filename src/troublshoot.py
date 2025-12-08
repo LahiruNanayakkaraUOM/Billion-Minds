@@ -7,17 +7,17 @@ logging.basicConfig(filename=f"./troubleshooting.log", level=logging.INFO,
             format="%(asctime)s %(levelname)s %(message)s")
 
 LOG_COMMANDS = {
-    "network": [
+    "Network": [
         "ping -c 3 8.8.8.8",
         "dig google.com",
         "ip a",
     ],
-    "performance": [
+    "Performance": [
         "top -b -n 1 | head -n 5",
         "free -m",
         "df -h",
     ],
-    "software": [
+    "Software": [
         "systemctl --failed",
         "journalctl -p 3 -n 20",
     ],
@@ -85,10 +85,9 @@ def diagnostics_node(logs, context):
 def scanning_node(logs, context):
 
     prompt = ISSUE_DETECTION_AND_SAFE_COMMAND_GENERATION_PROMPT.format(
-        logs=json.dumps(logs),
         context=context
     )
-
+    print("Scanning node called")
     try:
         tools = [is_allowed, log_collector]
         llm.bind_tools(tools)
@@ -97,6 +96,7 @@ def scanning_node(logs, context):
             return {"detected_issues": []}
         output = json.loads(response)
         # return structured diagnostics
+        print(output)
         return {"detected_issues": output["issues"]}
     except Exception as e:
         print("Error occurred:", e)
