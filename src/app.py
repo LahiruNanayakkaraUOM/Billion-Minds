@@ -255,15 +255,59 @@ elif st.session_state.awaiting_resolution_confirmation:
                                     "detected_issues": issues
                                 })
                                 if troubleshoot_result and "summary" in troubleshoot_result:
-                                    ai_msg_auto += "\n**Troubleshooting Summary:**\n"
+                                    ai_msg_auto += "\n**Troubleshooting Summary:**\n\n"
                                     st.markdown("**Troubleshooting Summary:**")
-                                    st.json(troubleshoot_result["summary"])
                                     build_conversation_payload(ticketId, ai_msg_auto, False)
                                     st.session_state.chat_history.append(AIMessage(ai_msg_auto))
-                                    st.session_state.chat_history.append(AIMessage(troubleshoot_result["summary"]))
-                                    build_conversation_payload(ticketId, troubleshoot_result["summary"], False)
+                                    summary = troubleshoot_result.get("summary")
+                                    if summary.get("issues_fixed") and len(summary.get("issues_fixed")) > 0:
+                                        ai_msg_auto += "**Issues Fixed:**\n\n"
+                                        st.markdown("**Issues Fixed:**")
+                                        build_conversation_payload(ticketId, ai_msg_auto, False)
+                                        st.session_state.chat_history.append(AIMessage(ai_msg_auto))
+                                        for issue in summary.get("issues_fixed"):
+                                            issue_text = issue.get('issue', 'Unknown issue')
+                                            issue_details = issue.get('issue_details', 'Unknown details')
+                                            ai_msg_auto += f"- **{issue_text}**: {issue_details}\n"
+                                            st.markdown(f"- **{issue_text}**: {issue_details}")
+                                            # build_conversation_payload(ticketId, ai_msg_auto, False)
+                                            # st.session_state.chat_history.append(AIMessage(ai_msg_auto))
+
+                                    if summary.get("issues_remaining") and len(summary.get("issues_remaining")) > 0:
+                                        ai_msg_auto += "**Issues Remaining:**\n\n"
+                                        st.markdown("**Issues Remaining:**")
+                                        # build_conversation_payload(ticketId, ai_msg_auto, False)
+                                        # st.session_state.chat_history.append(AIMessage(ai_msg_auto))
+                                        for issue in summary.get("issues_remaining"):
+                                            issue_text = issue.get('issue', 'Unknown issue')
+                                            issue_details = issue.get('issue_details', 'Unknown details')
+                                            ai_msg_auto += f"- **{issue_text}**: {issue_details}\n"
+                                            st.markdown(f"- **{issue_text}**: {issue_details}")
+                                            # build_conversation_payload(ticketId, ai_msg_auto, False)
+                                            # st.session_state.chat_history.append(AIMessage(ai_msg_auto))
+                                    
+                                    if summary.get("notes"):
+                                        ai_msg_auto += "**Notes:**\n"
+                                        st.markdown("**Notes:**")
+                                        notes = summary.get("notes")
+                                        st.markdown(notes)
+                                        ai_msg_auto += notes
+                                        # st.session_state.chat_history.append(AIMessage(ai_msg_auto))
+                                        # build_conversation_payload(ticketId, ai_msg_auto, False)
+                                    
+                                    if summary.get("needs_human_intervention"):
+                                        ai_msg_auto += "\n_⚠️For further troubleshooting, system recommend to consider escalating to a technician._\n"
+                                        st.markdown("_⚠️For further troubleshooting, system recommend to consider escalating to a technician._")         
+                                        st.session_state.awaiting_technician_confirmation = True  
+                                    
+                                    else:
+                                        ai_msg_auto += "\n✅ Troubleshooting completed. System appears to be functioning normally.\n"
+                                        st.success("✅ Troubleshooting completed. System appears to be functioning normally.")
+                                        st.session_state.show_buttons = True
+
+                                    build_conversation_payload(ticketId, ai_msg_auto, False)
+                                    st.session_state.chat_history.append(AIMessage(ai_msg_auto))                                
                                     st.session_state.awaiting_resolution_confirmation = False
-                                    st.session_state.show_buttons = True
                                 else:
                                     ai_msg_auto += "\nSorry, we could not find any solution for this issue at the moment. Please consider escalating to a technician.\n"
                                     st.warning("Sorry, we could not find any solution for this issue at the moment. Please consider escalating to a technician.")

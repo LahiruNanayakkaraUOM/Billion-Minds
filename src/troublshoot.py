@@ -69,20 +69,20 @@ def log_collector_node(category):
     print(selected_commands)
     
     for cmd in selected_commands:
-        print(f"Executing command: {cmd.command}")
+        print(f"Executing command: {cmd.get("command")}")
         try:
-            if not is_allowed(cmd.command):
-                print(f"Command {cmd.command} is not allowed")
+            if not is_allowed(cmd.get("command")):
+                print(f"Command {cmd.get("command")} is not allowed")
                 continue
-            st.markdown(f"{cmd.message}")
-            st.session_state.chat_history.append(AIMessage(cmd.message))
-            build_conversation_payload(st.session_state.ticketId, cmd.message, False)
-            logs[cmd.command] = ssh_run(cmd.command)
-            logging.info(f"Executed command: {cmd.command}")
+            st.markdown(f"{cmd.get("message")}")
+            st.session_state.chat_history.append(AIMessage(cmd.get("message")))
+            build_conversation_payload(st.session_state.ticketId, cmd.get("message"), False)
+            logs[cmd.get("command")] = ssh_run(cmd.get("command"))
+            logging.info(f"Executed command: {cmd.get("command")}")
         except Exception as e:
-            print(f"Error executing command {cmd.command}: {e}")
-            logging.error(f"Error executing command {cmd.command}: {e}")
-            logs[cmd.command] = f"ERROR executing command {cmd.command}: {e}"
+            print(f"Error executing command {cmd.get("command")}: {e}")
+            logging.error(f"Error executing command {cmd.get("command")}: {e}")
+            logs[cmd.get("command")] = f"ERROR executing command {cmd.get("command")}: {e}"
     return {"logs": logs}
     
 
@@ -224,6 +224,8 @@ def troubleshoot_node(state):
         troubleshoot_ai_msg += f"\nComparison completed\n\n"
         st.session_state.chat_history.append(AIMessage(troubleshoot_ai_msg))
         build_conversation_payload(ticketId, troubleshoot_ai_msg, False)
+        print("troubleshoot result\n\n")
+        print(output)
         return {"summary": output}
     except Exception as e:
         print("Error occurred:", e)
